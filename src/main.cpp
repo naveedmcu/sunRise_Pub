@@ -4,9 +4,9 @@
 #include <DS3232RTC.h>
 #include <sunMoon.h>
 
-#define OUR_latitude 31.4331     // WIMETRIX LONG
-#define OUR_longtitude 74.182152 //WIMETRIX LATI
-#define OUR_timezone 300         // localtime with UTC difference in minutes
+#define OUR_latitude 31.4331     // Pakistan LONG
+#define OUR_longtitude 74.182152 //Pakistan LATI
+#define OUR_timezone 300         // localtime with UTC difference in minutes +5*60
 
 sunMoon sm;
 DS3232RTC RTC;
