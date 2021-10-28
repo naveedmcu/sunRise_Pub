@@ -45,8 +45,8 @@ void setup()
 
   uint32_t jDay = sm.julianDay(); // Optional call
   byte mDay = sm.moonDay();
-  time_t sRise = sm.sunRise();
-  time_t sSet = sm.sunSet();
+  time_t CusRise = sm.sunRise();
+  time_t CusSet = sm.sunSet();
   Serial.print("Today is ");
   Serial.print(jDay);
   Serial.println(" Julian day");
@@ -54,9 +54,9 @@ void setup()
   Serial.print(mDay);
   Serial.println("day(s)");
   Serial.print("Today sunrise and sunset: ");
-  printDate(sRise);
+  printDate(CusRise);
   Serial.print("; ");
-  printDate(sSet);
+  printDate(CusSet);
   Serial.println("");
 
   Serial.print("Specific date was ");
@@ -64,8 +64,8 @@ void setup()
   Serial.println("");
   jDay = sm.julianDay(s_date);
   mDay = sm.moonDay(s_date);
-  sRise = sm.sunRise(s_date);
-  sSet = sm.sunSet(s_date);
+  time_t sRise = sm.sunRise(s_date);
+  time_t sSet = sm.sunSet(s_date);
   Serial.print("Specific date sunrise and sunset was: ");
   Serial.print("Julian day of specific date was ");
   Serial.println(jDay);
@@ -83,7 +83,13 @@ void setup()
   RTC.alarmInterrupt(ALARM_1, false);
   RTC.alarmInterrupt(ALARM_2, false);
   RTC.squareWave(SQWAVE_1_HZ);
-  RTC.setAlarm(ALM1_MATCH_SECONDS, 5, 0, 0, 1);
+  // RTC.setAlarm(ALM1_MATCH_SECONDS, 5, 0, 0, 1);
+  breakTime(CusRise, tm);
+  RTC.setAlarm(ALM1_MATCH_HOURS, 0, tm.Minute, tm.Hour, 1);
+  Serial.print("H:");
+  Serial.println(tm.Hour);
+  Serial.print("M:");
+  Serial.println(tm.Minute);
 }
 
 void loop()
@@ -102,5 +108,17 @@ void loop()
     printDate(RTC.get());
     Serial.println("");
     // put your main code here, to run repeatedly:
+    if (RTC.alarm(ALARM_1)) // check alarm flag, clear it if set
+    {
+      Serial.println(" ALARM_1 ");
+      printDate(RTC.get());
+      pinMode(2, OUTPUT);
+      digitalWrite(2, HIGH);
+    }
+    if (RTC.alarm(ALARM_2)) // check alarm flag, clear it if set
+    {
+      Serial.println(" ALARM_2 ");
+      printDate(RTC.get());
+    }
   }
 }
