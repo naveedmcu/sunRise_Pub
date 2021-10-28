@@ -31,7 +31,7 @@ void setup()
   tm.Year = 2016 - 1970;
   time_t s_date = makeTime(tm);
 
-  Serial.begin(9600);
+  Serial.begin(115200);
   setSyncProvider(RTC.get); // the function to get the time from the RTC
   if (timeStatus() != timeSet)
     Serial.println("Unable to sync with the RTC");
@@ -76,9 +76,31 @@ void setup()
   Serial.print("; ");
   printDate(sSet);
   Serial.println("");
+  RTC.setAlarm(ALM1_MATCH_DATE, 0, 0, 0, 1);
+  RTC.setAlarm(ALM2_MATCH_DATE, 0, 0, 0, 1);
+  RTC.alarm(ALARM_1);
+  RTC.alarm(ALARM_2);
+  RTC.alarmInterrupt(ALARM_1, false);
+  RTC.alarmInterrupt(ALARM_2, false);
+  RTC.squareWave(SQWAVE_1_HZ);
+  RTC.setAlarm(ALM1_MATCH_SECONDS, 5, 0, 0, 1);
 }
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
+  while (1)
+  {
+    delay(1000);
+    setSyncProvider(RTC.get); // the function to get the time from the RTC
+    if (timeStatus() != timeSet)
+      Serial.println("Unable to sync with the RTC");
+    else
+      Serial.println("RTC has set the system time");
+    sm.init(OUR_timezone, OUR_latitude, OUR_longtitude);
+
+    Serial.print("Loop Today is:");
+    printDate(RTC.get());
+    Serial.println("");
+    // put your main code here, to run repeatedly:
+  }
 }
